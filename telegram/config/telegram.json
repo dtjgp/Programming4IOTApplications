@@ -1,0 +1,20 @@
+{
+  "MQTTInfo": {
+    "broker": "mqtt.eclipseprojects.io", 
+    "port": 1883, 
+    "mqttid": "TeleBOT", 
+    "subtopic1": "channels/2516012/fields/field1/#", 
+    "subtopic2": "channels/2516012/signal/toiletanalysis/#",
+    "subtopic3": "channels/2516012/signal/dooranalysis/#",
+    "pubtopic1": "channels/2516012/signal/aircon", 
+    "pubtopic2": "channels/2516012/signal/attract", 
+    "pubtopic3": "channels/2516012/signal/light",
+    "pubtopic4": "channels/2516012/signal/timeadd",
+    "pubtopic5": "channels/2516012/signal/timedel"}, 
+    "RESTInfo": {
+      "CataAddr": "http://0.0.0.0:8080/", 
+      "host": "0.0.0.0", 
+      "TelePort": 8081, 
+      "AdaptorPort": 8082}, 
+      "telegramToken": "", 
+      "ServiceInfo": {"name": "TelegramBot", "ID": "2024042132345678", "serviceid": 3, "reg_status": true}}

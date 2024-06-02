@@ -1,0 +1,131 @@
+{
+    "ThingSpeak": {
+        "URL": "https://api.thingspeak.com/channels",
+        "REST_apikey": "4M1U0Q4NV4NTZLH9",
+        "public_flag": "True",
+        "MQTT_broker": "mqtt3.thingspeak.com",
+        "MQTT_port": 1883,
+        "MQTT_protocol": "tcp"
+    },
+    "RESTInfo": {
+        "host": "0.0.0.0",
+        "port": 8080
+    },
+    "RoomInfo": {
+        "id": 2516012,
+        "name": "Room1",
+        "description": null,
+        "latitude": "0.0",
+        "longitude": "0.0",
+        "created_at": "2024-04-20T14:43:46Z",
+        "elevation": null,
+        "last_entry_id": null,
+        "public_flag": true,
+        "url": null,
+        "ranking": 30,
+        "metadata": null,
+        "license_id": 0,
+        "github_url": null,
+        "tags": [],
+        "api_keys": [
+            {
+                "api_key": "DFYIRR9T4UNOJZLC",
+                "write_flag": true
+            },
+            {
+                "api_key": "CWXJR4X1WHZRF8F8",
+                "write_flag": false
+            }
+        ]
+    },
+    "ServiceList":[
+        {
+            "id": 2024042112345678,
+            "service_id": 1,
+            "service_info": "ThingSpeakAdaptor",
+            "register_status": "True"
+        },
+        {
+            "id": 2024042122345678,
+            "service_id": 2,
+            "service_info": "ThingSpeak",
+            "register_status": "True"
+        },
+        {
+            "id": 2024042132345678,
+            "service_id": 3,
+            "service_info": "TelegramBot",
+            "register_status": "True"
+        }
+    ],
+    "ControlList":[
+        {
+            "id": 2024042142345678,
+            "control_id": 1,
+            "control_info": "Air_control",
+            "register_status": "True"
+        },
+        {
+            "id": 2024042152345678,
+            "control_id": 2,
+            "control_info": "Time_control",
+            "register_status": "True"
+        },
+        {
+            "id": 2024042162345678,
+            "control_id": 3,
+            "control_info": "Toilet_control",
+            "register_status": "True"
+        }
+    ],
+    "DeviceList": [
+        {
+            "id": 2024042101,
+            "field_id": 1,
+            "field_info": "Tmepreature",
+            "register_status": "True"
+        },
+        {
+            "id": 2024042102,
+            "field_id": 2,
+            "field_info": "Humidity",
+            "register_status": "True"
+        },
+        {
+            "id": 2024042103,
+            "field_id": 3,
+            "field_info": "Toilet_status",
+            "register_status": "True"
+        },
+        {
+            "id": 2024042104,
+            "field_id": 4,
+            "field_info": "Door_status",
+            "register_status": "True"
+        },
+        {
+            "id": 2024042105,
+            "field_id": 5,
+            "field_info": "kitchen_status",
+            "register_status": "True"
+        },
+        {
+            "id": 2024042106,
+            "field_id": 6,
+            "field_info": "Air_conditioner_status",
+            "register_status": "True"
+        },
+        {
+            "id": 2024042107,
+            "field_id": 7,
+            "field_info": "Light_status",
+            "register_status": "True"
+        },
+        {
+            "id": 2024042108,
+            "field_id": 8,
+            "field_info": "Attract_status",
+            "register_status": "True"
+        }
+    ]
+}

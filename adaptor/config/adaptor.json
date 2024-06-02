@@ -1,0 +1,30 @@
+{
+    "MQTTInfo": {
+        "broker": "mqtt.eclipseprojects.io", 
+        "port": 1883, 
+        "subtopiclist":[
+            "channels/2516012/fields/field1/#",
+            "channels/2516012/fields/field2/#",
+            "channels/2516012/fields/field3/#",
+            "channels/2516012/fields/field4/#",
+            "channels/2516012/fields/field5/#",
+            "channels/2516012/fields/field6/#",
+            "channels/2516012/fields/field7/#",
+            "channels/2516012/fields/field8/#"]
+    }, 
+    "RESTInfo": {
+        "CataAddr": "http://0.0.0.0:8080/", 
+        "AdaptorAddr": "0.0.0.0", 
+        "AdaptorPort": 8082
+    }, 
+    "ThingSpeakInfo": {
+        "ThingspeakURL": "https://api.thingspeak.com/update?api_key=", 
+        "ChannelWriteAPIkey": "DFYIRR9T4UNOJZLC", 
+        "ChannelReadAPIKey": "CWXJR4X1WHZRF8F8"
+    }, 
+    "ServiceInfo": {
+        "name": "Thingspeak Adaptor", 
+        "ID": "2024042112345678", 
+        "reg_status": true
+    }
+}
