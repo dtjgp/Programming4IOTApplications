@@ -31,7 +31,7 @@ class AirControl(Control):
         self.startSim()
         try:
             if self.tempmsg is not None and self.humidmsg is not None:
-                if self.tempmsg["value"] > 30 or self.humidmsg["value"] > 50:
+                if self.tempmsg["value"] > 30 and self.humidmsg["value"] > 50:
                     if self.airsyb == 0:
                         operationmsg = self._message.copy()
                         operationmsg["value"] = 'on'
@@ -40,7 +40,7 @@ class AirControl(Control):
                         print("Turning on the air conditioner")
                         self.client.myPublish(self.pubtopic, operationmsg)
                         print(f"Published message: {operationmsg}")
-                if self.tempmsg["value"] < 30 or self.humidmsg["value"] < 50:
+                if self.tempmsg["value"] < 30 and self.humidmsg["value"] < 50:
                     if self.airsyb == 1:
                         operationmsg = self._message.copy()
                         operationmsg["value"] = 'off'
