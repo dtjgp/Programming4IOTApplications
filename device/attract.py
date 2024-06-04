@@ -12,7 +12,7 @@ class Attract(Device):
     def notify(self, topic, payload):
         msg = json.loads(payload)
         msg_type = msg['n']
-        if msg_type == 'attract':
+        if msg_type == 'attractcon':
             if msg['value'] == 'on':
                 print("The Open message received!")
                 self.attractsyb = 1

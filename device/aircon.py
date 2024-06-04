@@ -25,16 +25,21 @@ class Aircon(Device):
         self.startSim()
         try:
             while self.running:
-                if self.aircon_actsyb != self.airconsyb:
-                    message = self._message
-                    message['timestamp'] = time.time()
-                    if self.airconsyb == True: 
-                        message['value'] = int(1)             
-                    elif self.airconsyb == False:
+                message = self._message.copy()
+                if self.airconsyb == True:
+                    if self.aircon_actsyb == False:
+                        message['timestamp'] = time.time()
+                        message['value'] = int(1)
+                        self.client.myPublish(self.topic, message)
+                        print(f"air condition is on. Published message: {message}")
+                        self.aircon_actsyb = True
+                else:
+                    if self.aircon_actsyb == True:
+                        message['timestamp'] = time.time()
                         message['value'] = int(0)
-                    self.client.myPublish(self.topic, message)
-                    print(f"published Message: \n {message}")
-                    self.aircon_actsyb = self.airconsyb
+                        self.client.myPublish(self.topic, message)
+                        print(f"air condition is off. Published message: {message}")
+                        self.aircon_actsyb = False
                 time.sleep(10)
         finally:
             self.stopSim()

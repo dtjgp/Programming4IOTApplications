@@ -30,6 +30,8 @@ class Kitchen(Device):
                     # time.sleep(10)
                     self.led.closeled(5)
                     self.kit_actsyb = 0
+                    message['timestamp'] = time.time()
+                    message['value'] = int(0)
                     self.client.myPublish(self.topic, message)
                     print(f"Published message: {message}")
                 time.sleep(10)

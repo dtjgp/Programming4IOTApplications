@@ -140,7 +140,7 @@ class Tele:
                     return
         if message=='/AttOn':
             payload = self.__message.copy()
-            payload['n'] = "attract"
+            payload['n'] = "attractcon"
             payload['value'] = "on"
             payload['timestamp'] = time.time()
             # print(f'The payload is {payload}')
@@ -161,28 +161,30 @@ class Tele:
             self.client.myPublish(self.pubtopic1, payload)
             self.bot.sendMessage(chat_ID, text="Attraction switched off")
         elif message=="/getdata":
-            data = self.getdata()[0]
-            query = self.querydata.copy()
-            query["Time"] = data["created_at"]
-            query["temperature"] = data["field1"]
-            query["humidity"] = data["field2"]
-            query["toilet"] = data["field3"]
-            query["door"] = data["field4"]
-            query["kitchen"] = data["field5"]
-            query["aircon"] = data["field6"]
-            query["light"] = data["field7"]
-            query["Attract"] = data["field8"]
-            qtime = query["Time"]
-            qtemp = query["temperature"]
-            qhum = query["humidity"]
-            qtoilet = query["toilet"]
-            qdoor = query["door"]
-            qkitchen = query["kitchen"]
-            qaircon = query["aircon"]
-            qlight = query["light"]
-            qattract = query["Attract"]
-            query = f"Time: {qtime}\nTemperature: {qtemp}\nHumidity: {qhum}\nToilet: {qtoilet}\nDoor: {qdoor}\nKitchen: {qkitchen}\nAircon: {qaircon}\nLight: {qlight}\nAttract: {qattract}"
-            self.bot.sendMessage(chat_ID, text=query)
+            # data = self.getdata()[0]
+            # query = self.querydata.copy()
+            # query["Time"] = data["created_at"]
+            # query["temperature"] = data["field1"]
+            # query["humidity"] = data["field2"]
+            # query["toilet"] = data["field3"]
+            # query["door"] = data["field4"]
+            # query["kitchen"] = data["field5"]
+            # query["aircon"] = data["field6"]
+            # query["light"] = data["field7"]
+            # query["Attract"] = data["field8"]
+            # qtime = query["Time"]
+            # qtemp = query["temperature"]
+            # qhum = query["humidity"]
+            # qtoilet = query["toilet"]
+            # qdoor = query["door"]
+            # qkitchen = query["kitchen"]
+            # qaircon = query["aircon"]
+            # qlight = query["light"]
+            # qattract = query["Attract"]
+            # query = f"Time: {qtime}\nTemperature: {qtemp}\nHumidity: {qhum}\nToilet: {qtoilet}\nDoor: {qdoor}\nKitchen: {qkitchen}\nAircon: {qaircon}\nLight: {qlight}\nAttract: {qattract}"
+            # self.bot.sendMessage(chat_ID, text=query)
+            url = 'http://192.168.5.11:1880/ui'
+            self.bot.sendMessage(chat_ID, text=f'please click here to check the data: {url}')
         elif message == "/LightOn":
             payload = self.__message.copy()
             payload['n'] = "light"
