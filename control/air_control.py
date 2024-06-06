@@ -56,7 +56,7 @@ class AirControl(Control):
             self.stopSim()
             
 if __name__ == '__main__':
-    aircont = AirControl('control/config/control.json')
+    aircont = AirControl('config/control.json')
     aircont.runfile()
     while True:
         if input()=='q':

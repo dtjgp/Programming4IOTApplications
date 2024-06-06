@@ -297,7 +297,7 @@ class Tele:
     
 
 if __name__ == "__main__":
-    tele=Tele('telegram/config/telegram.json')
+    tele=Tele('config/telegram.json')
     tele.runfile()
     while True:
         if input("stop running [q]:") == 'q':

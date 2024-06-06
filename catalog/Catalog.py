@@ -141,7 +141,7 @@ class Catalog:
         print("Service has been stopped.")
 
 if __name__ == '__main__':
-    catalog = Catalog('catalog/config/catalog.json')
+    catalog = Catalog('config/catalog.json')
     catalog.startservice()
     while True:
         if input("stop running [q]:") == 'q':

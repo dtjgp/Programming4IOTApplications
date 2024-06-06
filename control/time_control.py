@@ -22,7 +22,7 @@ class TimeControl(Control):
         
     def update_config_file(self):
         try:
-            with open('control/config/control.json', 'w') as f:
+            with open('config/control.json', 'w') as f:
                 json.dump(self.config, f)
             print("Configuration successfully updated to file.")
         except Exception as e:
@@ -88,7 +88,7 @@ class TimeControl(Control):
             self.stopSim()
             
 if __name__ == "__main__":
-    timecon = TimeControl('control/config/control.json')
+    timecon = TimeControl('config/control.json')
     timecon.runfile()
     while True:
         if input()=='q':

@@ -61,7 +61,7 @@ class DataAnalysis(Control):
             self.stopSim()
             
 if __name__ == '__main__':
-    toiletinfo = DataAnalysis('control/config/control.json')
+    toiletinfo = DataAnalysis('config/control.json')
     toiletinfo.runfile()    
     while True:
         if input()=='q':

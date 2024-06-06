@@ -181,7 +181,7 @@ class Thingspeak_Adaptor:
             self.web_thread.join()
  
 if __name__ == "__main__":
-    ts_adaptor=Thingspeak_Adaptor('adaptor/config/adaptor.json')
+    ts_adaptor=Thingspeak_Adaptor('config/adaptor.json')
     ts_adaptor.runfile()
     while True:
         if input()=='q':
