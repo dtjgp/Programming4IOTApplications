@@ -20,29 +20,34 @@ class Catalog:
     def __init__(self, catalog_file):
         self.config = json.load(open(catalog_file, 'r'))
         self.fetch_timer = None
-        self.device_list, self.service_list, self.control_list = self.get_ids()
-        self.reged_device_list, self.reged_service_list, self.reged_control_list = [], [], [] 
+        self.device_list, self.service_list, self.control_list, self.reged_device_list, self.reged_service_list, self.reged_control_list = self.get_ids()
         self.host = self.config["RESTInfo"]["host"]
         self.port = self.config["RESTInfo"]["port"]
-        self.status = None
-        self.respond = None
+        self.stop_event = threading.Event()
+
         
     def get_ids(self):
         device_list = []
         service_list = []
         control_list = []
+        reged_device_list = {}
+        reged_service_list = {}
+        reged_control_list = {}
         for device in self.config["DeviceList"]:
             device_list.append(device["id"])
+            reged_device_list[device["id"]] = 0
         print("Device list:", device_list)
         for service in self.config["ServiceList"]:
             service_list.append(service["id"])
+            reged_service_list[service["id"]] = 0
         print("Service list:", service_list)
         for control in self.config["ControlList"]:
             control_list.append(control["id"])
+            reged_control_list[control["id"]] = 0
         print("Control list:", control_list)
-        return device_list, service_list, control_list
+        return device_list, service_list, control_list, reged_device_list, reged_service_list, reged_control_list
 
-    def Service(self):
+    def Service(self):     
         cherrypy.config.update({
             'server.socket_host': self.host,
             'server.socket_port': self.port
@@ -53,7 +58,33 @@ class Catalog:
                 'tools.sessions.on': True,
             }
         })
-        
+    
+    def check_alive(self):
+        while not self.stop_event.is_set():
+            self.stop_event.wait(300)
+            print("Checking the alive status of devices, services and controls...")
+            for device_id, alive_status in self.reged_device_list.items():
+                if alive_status == 0:
+                    # find the device in the config file and set the register_status to False
+                    for device in self.config["DeviceList"]:
+                        if device["id"] == device_id:
+                            device["register_status"] = False
+                    print(f'The device {device_id} is not alive')
+            for service_id, alive_status in self.reged_service_list.items():
+                if alive_status == 0:
+                    for service in self.config["ServiceList"]:
+                        if service["id"] == service_id:
+                            service["register_status"] = False
+                    print(f'The service {service_id} is not alive')
+            for control_id, alive_status in self.reged_control_list.items():
+                if alive_status == 0:
+                    for control in self.config["ControlList"]:
+                        if control["id"] == control_id:
+                            control["register_status"] = False
+                    print(f'The control {control_id} is not alive')
+            with open('catalog/config/catalog.json', 'w') as f:
+                json.dump(self.config, f)
+
     @cherrypy.tools.json_out()
     def GET(self, *uri, **params):
         # response=json.load(params)
@@ -66,7 +97,11 @@ class Catalog:
                 device_id = int(device_id)
                 if device_id in self.device_list:
                     timestamp = time.time()
-                    output = {"device":device_id, "status":True, "timestamp":timestamp}
+                    for device in self.config["DeviceList"]:
+                        if device["id"] == device_id:
+                            device_stat = device["register_status"]
+                    output = {"device":device_id, "status":device_stat, "timestamp":timestamp}
+                    return json.dumps(output)
             else:
                 raise cherrypy.HTTPError(400, 'DEVICE NOT REGISTERED')
         elif uri[0]=='service':
@@ -76,7 +111,11 @@ class Catalog:
                 service_id = int(service_id)
                 if service_id in self.service_list:
                     timestamp = time.time()
-                    output = {"service":service_id, "status":True, "timestamp":timestamp}
+                    for service in self.config["ServiceList"]:
+                        if service["id"] == service_id:
+                            service_stat = service["register_status"]
+                    output = {"service":service_id, "status":service_stat, "timestamp":timestamp}
+                    return json.dumps(output)
             else:
                 raise cherrypy.HTTPError(400, 'SERVICE NOT REGISTERED')
         elif uri[0]=='control':
@@ -86,62 +125,121 @@ class Catalog:
                 control_id = int(control_id)
                 if control_id in self.control_list:
                     timestamp = time.time()
-                    output = {"control":control_id, "status":True, "timestamp":timestamp}
+                    for control in self.config["ControlList"]:
+                        if control["id"] == control_id:
+                            control_stat = control["register_status"]
+                    output = {"control":control_id, "status":control_stat, "timestamp":timestamp}
+                    return json.dumps(output)
             else:
                 raise cherrypy.HTTPError(400, 'CONTROL NOT REGISTERED')
-        return json.dumps(output)
+        else:
+            raise cherrypy.HTTPError(400, 'INVALID URI')
     
+    def PUT(self, *uri, **params):
+        body = cherrypy.request.body.read()
+        if len(body)>0:
+            try:
+                jsonBody=json.loads(body)
+                for key in jsonBody.keys():
+                    if key == 'device':
+                        device_id = int(jsonBody[key])
+                        if device_id in self.reged_device_list:
+                            self.reged_device_list[device_id] += 1
+                            response = {"device":device_id, "status":'alive'}
+                            return json.dumps(response)
+                        else:
+                            raise cherrypy.HTTPError(400, 'DEVICE NOT REGISTERED')
+                    elif key == 'service':
+                        service_id = int(jsonBody[key])
+                        if service_id in self.reged_service_list:
+                            self.reged_service_list[service_id] += 1
+                            response = {"service":service_id, "status":'alive'}
+                            return json.dumps(response)
+                        else:
+                            raise cherrypy.HTTPError(400, 'SERVICE NOT REGISTERED')
+                    elif key == 'control':
+                        control_id = int(jsonBody[key])
+                        if control_id in self.reged_control_list:
+                            self.reged_control_list[control_id] += 1
+                            response = {"control":control_id, "status":'alive'}
+                            return json.dumps(response)
+                        else:
+                            raise cherrypy.HTTPError(400, 'CONTROL NOT REGISTERED')
+                    else:
+                        raise cherrypy.HTTPError(400, 'INVALID URI')
+            except json.decoder.JSONDecodeError:
+                raise cherrypy.HTTPError(400,"Bad Request. Body must be a valid JSON")
+            except:
+                raise cherrypy.HTTPError(500,"Internal Server Error")
+        else:
+            return json.dumps({"status":"No body in the request"})
+
     def POST(self, *uri, **params):
         body = cherrypy.request.body.read()
         json_body = json.loads(body.decode('utf-8'))
         if uri[0]=='device':
             if json_body['ID'] not in self.device_list:
                 raise cherrypy.HTTPError(status=400, message='DEVICE NOT REGISTERED')
-            if json_body['ID'] not in self.reged_device_list:
-                self.reged_device_list.append(json_body['ID'])
-                # find out the id in the json file
+            if self.reged_device_list[json_body['ID']] == 0:
+                self.reged_device_list[json_body['ID']] += 1
                 for device in self.config["DeviceList"]:
                     if device["id"] == json_body['ID']:
                         device["register_status"] = True
                 with open('catalog/config/catalog.json', 'w') as f:
                     json.dump(self.config, f)
-            return json.dumps(True)
+                response = {"device":json_body['ID'], "status":True}
+            else:
+                response = {"device":json_body['ID'], "status":True}
+            return json.dumps(response) 
         elif uri[0]=='service':
             if json_body['ID'] not in self.service_list:
                 raise cherrypy.HTTPError(status=400, message='SERVICE NOT REGISTERED')
-            if json_body['ID'] not in self.reged_service_list:
-                self.reged_service_list.append(json_body['ID'])
+            if self.reged_service_list[json_body['ID']] == 0:
+                self.reged_service_list[json_body['ID']] += 1
                 for service in self.config["ServiceList"]:
                     if service["id"] == json_body['ID']:
                         service["register_status"] = True
                 with open('catalog/config/catalog.json', 'w') as f:
                     json.dump(self.config, f)
-            return json.dumps(True)
+                response = {"service":json_body['ID'], "status":True}
+            else:
+                response = {"service":json_body['ID'], "status":True}
+            return json.dumps(response)
         elif uri[0]=='control':
             if json_body['ID'] not in self.control_list:
                 raise cherrypy.HTTPError(status=400, message='DEVICE NOT REGISTERED')
-            if json_body['ID'] not in self.reged_control_list:
-                self.reged_control_list.append(json_body['ID'])
+            if self.reged_control_list[json_body['ID']] == 0:
+                self.reged_control_list[json_body['ID']] += 1
                 for control in self.config["ControlList"]:
-                   if control["id"] == json_body['ID']:
-                       control["register_status"] = True
+                    if control["id"] == json_body['ID']:
+                        control["register_status"] = True
                 with open('catalog/config/catalog.json', 'w') as f:
                     json.dump(self.config, f)
-            return json.dumps(True)
+                response = {"control":json_body['ID'], "status":True}
+            else:
+                response = {"control":json_body['ID'], "status":True}
+            return json.dumps(response)
         else:
             raise cherrypy.HTTPError(status=400, message='INVALID URI')
         
     def startservice(self):
+        func_thread = threading.Thread(target=self.check_alive)
         service_thread = threading.Thread(target=self.Service)
+        func_thread.start()
         service_thread.start()
+        self.func_thread = func_thread
+        self.service_thread = service_thread
 
     def stop(self):
+        self.stop_event.set()
+        if self.func_thread.is_alive():
+            self.func_thread.join()
         cherrypy.engine.stop()
         cherrypy.engine.exit()
         print("Service has been stopped.")
 
 if __name__ == '__main__':
-    catalog = Catalog('config/catalog.json')
+    catalog = Catalog('catalog/config/catalog.json')
     catalog.startservice()
     while True:
         if input("stop running [q]:") == 'q':

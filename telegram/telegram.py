@@ -46,23 +46,50 @@ class Tele:
                                'callback_query': self.on_callback_query}).run_as_thread()
 
     def regservice(self):
-        url = self.cataaddr
+        url = self.restaddr
         url = url + "service"
         print( f'The url is {url}.')
-        service_id = self.serviceid
-        data = {'ID': int(service_id)}
-        response = requests.post(url, json=data)
-        resp_data = response.json()
-        print(f'The response of the post is {resp_data}.')
-        if self.status == True:
-            print(f'The device is already registered.')
+        data = {'ID': int(self.serviceid)}
+        try:
+            response = requests.post(url, json=data)
+            if response.status_code == 200:
+                resp_data = response.json()
+                print(f'The response of the post is {resp_data}.')
+                resp_status = resp_data['status']
+                if resp_status == True:
+                    self.serviceinfo['reg_status'] = True
+                    self.status = self.serviceinfo['reg_status']
+                    with open('telegram/config/telegram.json', 'w') as f:
+                        json.dump(self.config, f)
+        except requests.exceptions.RequestException as e:
+            print(f"Request failed: {e}")   
+        if self.status:
+            print(f'The service is registered.')
         else:
-            if resp_data == True:
-                self.serviceinfo['reg_status'] = True
-                self.status = self.serviceinfo['reg_status']
-                with open('telegram/config/telegram.json', 'w') as f:
-                    json.dump(self.config, f)
+            print(f'The service is not registered.')
                     
+    def updatestatus(self):
+        while self.running:
+            url = self.cataaddr
+            print(f'The url is {url}.')
+            data = {'service': int(self.serviceid)}
+            print(f'The data is {data}.')
+            response = requests.put(url, json=data)
+            try:
+                if response.status_code == 200:
+                    respdata = response.json()
+                    print(f'The status is {respdata}.')
+                    resp_status = respdata['status'] 
+                    if resp_status == 'alive':
+                        print(f'The service reg status is alive and updated.')
+                        self.status = True
+                    else:
+                        self.status = False
+                        print(f'The service reg status is not alive.')
+            except json.JSONDecodeError:
+                print(f"Failed to decode JSON from response: {response.text}")
+            time.sleep(120)
+            
     def pingCatalog(self):
         while self.running:
             url = self.cataaddr + "service"
@@ -76,11 +103,14 @@ class Tele:
                 status = respdata['status']
                 if status == True:
                     self.status = True
-                    print(f'The device reg status is updated.')
+                    print(f'The servcice reg status is True and it is online.')
+                else:
+                    self.status = False
+                    print(f'The control reg status is False and it is offline.')
             except json.JSONDecodeError:
                 print(f"Failed to decode JSON from response: {response.text}")
                 continue 
-            time.sleep(120)
+            time.sleep(200)
     
     def startSim(self):
         self.client.start()
@@ -275,16 +305,17 @@ class Tele:
         return data
         
     def runfile(self):
-        if not self.status:
-            self.regservice()
+        self.regservice()
         if self.status:
             print(f'The service is registered successfully.')
             time.sleep(2)
             self.startSim()
             self.tele_thread = threading.Thread(target=self.teleservice)
             self.ping_thread = threading.Thread(target=self.pingCatalog)
+            self.status_thread = threading.Thread(target=self.updatestatus)
             self.tele_thread.start()
             self.ping_thread.start()
+            self.status_thread.start()
         else:
             print(f'The service is not registered.')
             
@@ -294,6 +325,8 @@ class Tele:
             self.ping_thread.join()
         if self.tele_thread:
             self.tele_thread.join()
+        if self.status_thread:
+            self.status_thread.join()
     
 
 if __name__ == "__main__":
