@@ -13,8 +13,8 @@
             "channels/2516012/fields/field8/#"]
     }, 
     "RESTInfo": {
-        "CataAddr": "http://0.0.0.0:8080/", 
-        "AdaptorAddr": "0.0.0.0", 
+        "CataAddr": "http://127.0.0.1:8080/", 
+        "AdaptorAddr": "127.0.0.1", 
         "AdaptorPort": 8082
     }, 
     "ThingSpeakInfo": {

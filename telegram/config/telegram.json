@@ -12,9 +12,9 @@
     "pubtopic4": "channels/2516012/signal/timeadd",
     "pubtopic5": "channels/2516012/signal/timedel"}, 
     "RESTInfo": {
-      "CataAddr": "http://0.0.0.0:8080/", 
-      "host": "0.0.0.0", 
+      "CataAddr": "http://127.0.0.1:8080/", 
+      "host": "127.0.0.1", 
       "TelePort": 8081, 
       "AdaptorPort": 8082}, 
-      "telegramToken": "", 
+      "telegramToken": "7073653838:AAGScH1v2FJ3TFIZN_hpNNtr7I3s90mvMXQ", 
       "ServiceInfo": {"name": "TelegramBot", "ID": "2024042132345678", "serviceid": 3, "reg_status": true}}

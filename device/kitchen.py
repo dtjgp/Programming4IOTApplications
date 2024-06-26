@@ -40,7 +40,7 @@ class Kitchen(Device):
             self.led.clean()
 
 if __name__ == "__main__":
-    kitchen = Kitchen('device/config/device.json')
+    kitchen = Kitchen('config/device.json')
     kitchen.runfile()
     while True:
         if input()=='q':

@@ -2,7 +2,8 @@ from MyMQTT import *
 import json
 import time
 import threading
-import requests
+import requests 
+import os
 
 class Control:
     def __init__(self, catalog, control_key):
@@ -18,6 +19,11 @@ class Control:
         self._message = {'client': self.clientID, 'n': self.clientID, 'value': '', 'timestamp': '', 'unit': 'status'}
         self.running = True
         self.thread = None
+
+        self.catalog_host = os.getenv('CATALOG_HOST', 'localhost')
+        self.catalog_port = os.getenv('CATALOG_PORT', '8080')
+        self.catalog_url = f"http://{self.catalog_host}:{self.catalog_port}/"
+
         
     def registerControl(self):
         url = self.restaddr
@@ -33,7 +39,7 @@ class Control:
                 if resp_status == True:
                     self.controlinfo['reg_status'] = True
                     self.status = self.controlinfo['reg_status']
-                    with open('control/config/control.json', 'w') as f:
+                    with open('config/control.json', 'w') as f:
                         json.dump(self.config, f)
         except requests.exceptions.RequestException as e:
             print(f"Request failed: {e}")   
@@ -45,6 +51,7 @@ class Control:
     def updatestatus(self):
         while self.running:
             url = self.restaddr
+            #url = self.catalog_url
             print(f'The url is {url}.')
             data = {'control': int(self.id)}
             print(f'The data is {data}.')
@@ -67,6 +74,7 @@ class Control:
     def pingCatalog(self):
         while self.running:
             url = self.restaddr + "control"
+            #url = self.catalog_url + "control"
             print(f'The url is {url}.')
             data = {'ID': int(self.id)}
             print(f'The data is {data}.')

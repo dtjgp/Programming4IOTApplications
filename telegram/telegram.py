@@ -7,6 +7,7 @@ from telepot.loop import MessageLoop
 from telepot.namedtuple import InlineKeyboardButton, InlineKeyboardMarkup
 from MyMQTT import *
 import threading
+import os
 
 class Tele:
     exposed=True
@@ -45,8 +46,12 @@ class Tele:
         MessageLoop(self.bot, {'chat': self.on_chat_message,
                                'callback_query': self.on_callback_query}).run_as_thread()
 
+        self.catalog_host = os.getenv('CATALOG_HOST', 'localhost')
+        self.catalog_port = os.getenv('CATALOG_PORT', '80')
+        self.catalog_url = f"http://{self.catalog_host}:{self.catalog_port}/"
+
     def regservice(self):
-        url = self.restaddr
+        url = self.cataaddr
         url = url + "service"
         print( f'The url is {url}.')
         data = {'ID': int(self.serviceid)}
@@ -59,7 +64,7 @@ class Tele:
                 if resp_status == True:
                     self.serviceinfo['reg_status'] = True
                     self.status = self.serviceinfo['reg_status']
-                    with open('telegram/config/telegram.json', 'w') as f:
+                    with open('config/telegram.json', 'w') as f:
                         json.dump(self.config, f)
         except requests.exceptions.RequestException as e:
             print(f"Request failed: {e}")   
@@ -189,7 +194,7 @@ class Tele:
             payload['value'] = "off"
             payload['timestamp'] = time.time()
             self.client.myPublish(self.pubtopic1, payload)
-            self.bot.sendMessage(chat_ID, text="Attraction switched off")
+            self.bot.sendMessage(chat_ID, text="Aircon switched off")
         elif message=="/getdata":
             # data = self.getdata()[0]
             # query = self.querydata.copy()
@@ -222,7 +227,7 @@ class Tele:
             payload['timestamp'] = time.time()
             print(f'The payload is {payload}')
             self.client.myPublish(self.pubtopic3, payload)
-            self.bot.sendMessage(chat_ID, text="Attraction switched on")
+            self.bot.sendMessage(chat_ID, text="Light switched on")
         elif message == "/LightOff":
             payload = self.__message.copy()
             payload['n'] = "light"
@@ -230,7 +235,7 @@ class Tele:
             payload['timestamp'] = time.time()
             print(f'The payload is {payload}')
             self.client.myPublish(self.pubtopic3, payload)
-            self.bot.sendMessage(chat_ID, text="Attraction switched off")
+            self.bot.sendMessage(chat_ID, text="Light switched off")
         # set a kitchen time modification, the user will be asked to enter a time，and the time user entered will be added to the kitchen time list
         elif message == "/AddKitTime":
             self.chat_states[chat_ID] = 'adding_time'
@@ -293,7 +298,7 @@ class Tele:
                     self.bot.sendMessage(chat_ID, text=tosend)
         return json.dumps(output)
     
-    def getdata(self):
+    """def getdata(self):
         url = f"http://{self.host}:{self.adaport}/data"
         print(f'The url is {url}.')
         response = requests.get(url)
@@ -303,6 +308,7 @@ class Tele:
             print('Warning: Could not decode JSON from response')
             data = None
         return data
+        """
         
     def runfile(self):
         self.regservice()

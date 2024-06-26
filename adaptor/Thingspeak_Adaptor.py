@@ -5,6 +5,7 @@ import time
 import uuid
 import threading
 import cherrypy
+import os
 
 class Thingspeak_Adaptor:
     exposed=True
@@ -30,6 +31,10 @@ class Thingspeak_Adaptor:
         self.running = True
         self.thread = None
 
+        self.catalog_host = os.getenv('CATALOG_HOST', 'localhost')
+        self.catalog_port = os.getenv('CATALOG_PORT', '8080')
+        self.catalog_url = f"http://{self.catalog_host}:{self.catalog_port}/"
+
     def regservice(self):
         url = self.cataaddr
         url = url + "service"
@@ -44,7 +49,7 @@ class Thingspeak_Adaptor:
                 if resp_status == True:
                     self.serviceinfo['reg_status'] = True
                     self.status = self.serviceinfo['reg_status']
-                    with open('adaptor/config/adaptor.json', 'w') as f:
+                    with open('config/adaptor.json', 'w') as f:
                         json.dump(self.config, f)
         except requests.exceptions.RequestException as e:
             print(f"Request failed: {e}")   

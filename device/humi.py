@@ -28,7 +28,7 @@ class Humi(Device):
         print(f"published Message: \n {message}")
         
 if __name__ == '__main__':
-    humi = Humi('device/config/device.json')
+    humi = Humi('config/device.json')
     humi.runfile()
     while True:
         if input()=='q':

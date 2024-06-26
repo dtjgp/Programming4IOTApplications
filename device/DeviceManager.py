@@ -3,7 +3,7 @@ import json
 import time
 from MyMQTT import * 
 import threading
-
+import os
 
 class Device:
     def __init__(self, catalog_file, device_key):
@@ -31,6 +31,11 @@ class Device:
         # self.client = MyMQTT(self.mqttid, self.broker, self.port, self)
         self.running = True
         self.thread = None
+
+        self.catalog_host = os.getenv('CATALOG_HOST', 'localhost')
+        self.catalog_port = os.getenv('CATALOG_PORT', '8080')
+        self.catalog_url = f"http://{self.catalog_host}:{self.catalog_port}/"
+
         
     def registerDevice(self):
         url = self.restaddr
@@ -46,7 +51,7 @@ class Device:
                 if resp_status == True:
                     self.device['reg_status'] = True
                     self.status = self.device['reg_status']
-                    with open('device/config/device.json', 'w') as f:
+                    with open('config/device.json', 'w') as f:
                         json.dump(self.config, f)
         except requests.exceptions.RequestException as e:
             print(f"Request failed: {e}")    

@@ -82,7 +82,7 @@ class Catalog:
                         if control["id"] == control_id:
                             control["register_status"] = False
                     print(f'The control {control_id} is not alive')
-            with open('catalog/config/catalog.json', 'w') as f:
+            with open('config/catalog.json', 'w') as f:
                 json.dump(self.config, f)
 
     @cherrypy.tools.json_out()
@@ -185,7 +185,7 @@ class Catalog:
                 for device in self.config["DeviceList"]:
                     if device["id"] == json_body['ID']:
                         device["register_status"] = True
-                with open('catalog/config/catalog.json', 'w') as f:
+                with open('config/catalog.json', 'w') as f:
                     json.dump(self.config, f)
                 response = {"device":json_body['ID'], "status":True}
             else:
@@ -199,7 +199,7 @@ class Catalog:
                 for service in self.config["ServiceList"]:
                     if service["id"] == json_body['ID']:
                         service["register_status"] = True
-                with open('catalog/config/catalog.json', 'w') as f:
+                with open('config/catalog.json', 'w') as f:
                     json.dump(self.config, f)
                 response = {"service":json_body['ID'], "status":True}
             else:
@@ -213,7 +213,7 @@ class Catalog:
                 for control in self.config["ControlList"]:
                     if control["id"] == json_body['ID']:
                         control["register_status"] = True
-                with open('catalog/config/catalog.json', 'w') as f:
+                with open('config/catalog.json', 'w') as f:
                     json.dump(self.config, f)
                 response = {"control":json_body['ID'], "status":True}
             else:
@@ -239,7 +239,7 @@ class Catalog:
         print("Service has been stopped.")
 
 if __name__ == '__main__':
-    catalog = Catalog('catalog/config/catalog.json')
+    catalog = Catalog('config/catalog.json')
     catalog.startservice()
     while True:
         if input("stop running [q]:") == 'q':

@@ -43,7 +43,7 @@ class Attract(Device):
             self.led.clean()
 
 if __name__ == '__main__': 
-    attract = Attract('device/config/device.json')
+    attract = Attract('config/device.json')
     attract.runfile()
     while True:
         if input()=='q':

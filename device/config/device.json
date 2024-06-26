@@ -1,6 +1,6 @@
 {"MQTTInfo": 
 {"broker":"mqtt.eclipseprojects.io", "port": 1883}, 
-"RESTInfo": "http://0.0.0.0:8080/", 
+"RESTInfo": "http://127.0.0.1:8080/", 
 "Device_temp": {"mqtt_id": "dtjgp_temperature", "deviceID": "2024042101", "field_id": "1", "field_info": "Tmepreature", "publish": "channels/2516012/fields/field1", "subscribe": "", "reg_status": true}, 
 "Device_humi": {"mqtt_id": "dtjgp_humidity", "deviceID": "2024042102", "field_id": "2", "field_info": "Humidity", "publish": "channels/2516012/fields/field2", "subscribe": "", "reg_status": true}, 
 "Device_toilet": {"mqtt_id": "dtjgp_toilet", "deviceID": "2024042103", "field_id": "3", "field_info": "Toilet", "publish": "channels/2516012/fields/field3", "subscribe": "", "reg_status": true}, 

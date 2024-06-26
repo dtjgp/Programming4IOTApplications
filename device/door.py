@@ -56,7 +56,7 @@ class Door(Device):
                     print(f'The response of the post is {resp_status}.')
                     
 if __name__ == "__main__":
-    door = Door('device/config/device.json')
+    door = Door('config/device.json')
     door.runfile()
     while True:
         if input()=='q':

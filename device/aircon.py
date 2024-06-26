@@ -45,7 +45,7 @@ class Aircon(Device):
             self.stopSim()
 
 if __name__ == '__main__':
-    aircon = Aircon('device/config/device.json')
+    aircon = Aircon('config/device.json')#device/config/device.json
     aircon.runfile()
     while True:
         if input()=='q':

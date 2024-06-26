@@ -49,7 +49,7 @@ class Light(Device):
             # self.led.clean()
             
 if __name__ == "__main__":
-    light = Light('device/config/device.json')
+    light = Light('config/device.json')
     light.runfile()
     while True:
         if input()=='q':

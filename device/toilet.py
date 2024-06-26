@@ -34,7 +34,7 @@ class Toilet(Device):
             self.toilet_status = self.toiletstate
             
 if __name__ == "__main__":
-    toilet = Toilet('device/config/device.json')
+    toilet = Toilet('config/device.json')
     toilet.runfile()
     while True:
         if input()=='q':
